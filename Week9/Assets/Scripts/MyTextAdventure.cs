@@ -9,6 +9,12 @@ public class MyTextAdventure : MonoBehaviour {
 	public AudioSource sfxSource;
 	public Camera mainCam;
 
+	//declaring an audioClip so I can change the SFX later.
+	public AudioClip winSound;
+
+	public Image portraitOfDiego;
+	public Image keyImage;
+
 	public string currentRoom;
 	public string myText;
 
@@ -25,6 +31,7 @@ public class MyTextAdventure : MonoBehaviour {
 	void Start () {
 		//change text to read "We ran our scene."
 		myText = "We ran our scene.";
+		currentRoom = "title";
 	}
 	
 	// Update is called once per frame
@@ -36,6 +43,26 @@ public class MyTextAdventure : MonoBehaviour {
 			GetComponent<Text>().text = "you pressed spwacebwar.";
 		} */
 
+	
+		//deactivate picture of diego if you're not in the title page or win room
+		if (currentRoom == "title" || (currentRoom == "locked door" && hasKey))
+		{
+			portraitOfDiego.enabled = true;
+		} else {
+			portraitOfDiego.enabled = false;
+
+			//if I wanted to change the image with another
+			//portraitOfDiego.sprite = mySpriteVariable;
+		}
+
+		//only activate key image if you don't have the key, or you've used it to win
+		if (currentRoom == "locked door" || !hasKey)
+		{
+			keyImage.enabled = false;
+		} else {
+			keyImage.enabled = true;
+		}
+
 
 		//we set our rooms to nil, so that if we haven't overwritten them by the time
 		//we check for keypresses, we know there's no room.
@@ -44,10 +71,21 @@ public class MyTextAdventure : MonoBehaviour {
 		room_south = "nil";
 		room_west = "nil";
 
+		//resetting the background and text color, so that if i leave a room
+		//where I change it, it doesn't stay that color
+		mainCam.backgroundColor = Color.black;
+		GetComponent<Text>().color = Color.white;
+
 
 		// if I'm in the entryway, I want the game to say "you are in the entryway."
 		// else, check the other statements.
-		if (currentRoom == "entry"){
+		if (currentRoom == "title"){
+			myText = "Spoopy Mansion\n\nBy Professor D\n\nPress Space to Begin";
+
+			if (Input.GetKeyDown(KeyCode.Space)) {
+				currentRoom = "entry";
+			}
+		} else if (currentRoom == "entry"){
 
 			room_north = "hallway";
 
@@ -69,7 +107,6 @@ public class MyTextAdventure : MonoBehaviour {
 			
 			myText = "You are in the kitchen.";
 				if (!hasKey){
-				mainCam.backgroundColor = Color.green;
 					myText += " You see something sparkling in the drain. Press \"i\" to inspect.";
 
 					if (Input.GetKeyDown(KeyCode.I)){
@@ -81,6 +118,9 @@ public class MyTextAdventure : MonoBehaviour {
 				}
 
 		}  else if (currentRoom == "drain"){
+			//changing background color and text color
+			mainCam.backgroundColor = Color.green;
+			GetComponent<Text>().color = Color.blue;
 
 			myText = "You found a key!!! NOICE. Press spacebar to return to the kitchen.";
 			if (!hasKey) {
@@ -94,8 +134,12 @@ public class MyTextAdventure : MonoBehaviour {
 
 		}else if (currentRoom == "locked door") {
 
-			if (hasKey) {
+			sfxSource.clip = winSound;
+			if (!sfxSource.isPlaying) {
+				sfxSource.Play();
+			}
 
+			if (hasKey) {
 				myText = "HEYOOOOO YOU GOT TO THE WIN ROOOM!!!! BOIIOIOIOIOING, NICE! Let'S ENJOY CAKE.";
 
 			} else {
