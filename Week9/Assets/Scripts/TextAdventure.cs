@@ -9,6 +9,9 @@ public class TextAdventure : MonoBehaviour {
 	//this is a string that will keep track of the room we're in.
 	public string currentRoom;
 
+	public AudioSource sfxSource;
+	public Camera myCam;
+
 	// these will help us change rooms efficiently.
 	private string room_up;
 	private string room_down;
@@ -46,6 +49,8 @@ public class TextAdventure : MonoBehaviour {
 		room_left = "nil";
 		room_right = "nil";
 
+		myCam.backgroundColor = Color.black;
+
 
 		//here we define our text for our rooms, and also overwrite any necessary direction variables so we have the proper connections.
 		if (currentRoom == "entryway") {
@@ -75,6 +80,9 @@ public class TextAdventure : MonoBehaviour {
 		} else if (currentRoom == "library") {
 			room_left = "hallway";
 
+			if (!hasKey) {
+				sfxSource.Play();
+			}
 			textBuffer = "You are in the library. You look in a book and there's a key! You take the key.";
 
 			// we set the hasKey variable to true. Now the player can win.

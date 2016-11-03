@@ -6,8 +6,13 @@ public class MyTextAdventure : MonoBehaviour {
 
 
 
+	public AudioSource sfxSource;
+	public Camera mainCam;
+
 	public string currentRoom;
 	public string myText;
+
+	private bool hasKey = false;
 
 	//variables to store possible room connections.
 	private string room_north;
@@ -54,6 +59,7 @@ public class MyTextAdventure : MonoBehaviour {
 
 			room_east = "kitchen";
 			room_south = "entry";
+			room_west = "locked door";
 			
 			myText = "you are in the hallway.";
 
@@ -62,6 +68,46 @@ public class MyTextAdventure : MonoBehaviour {
 			room_west = "hallway";
 			
 			myText = "You are in the kitchen.";
+				if (!hasKey){
+				mainCam.backgroundColor = Color.green;
+					myText += " You see something sparkling in the drain. Press \"i\" to inspect.";
+
+					if (Input.GetKeyDown(KeyCode.I)){
+
+						currentRoom = "drain";
+						
+
+					}
+				}
+
+		}  else if (currentRoom == "drain"){
+
+			myText = "You found a key!!! NOICE. Press spacebar to return to the kitchen.";
+			if (!hasKey) {
+				sfxSource.Play();
+			}
+			hasKey = true;
+
+			if (Input.GetKeyDown(KeyCode.Space)) {
+				currentRoom = "kitchen";
+			}
+
+		}else if (currentRoom == "locked door") {
+
+			if (hasKey) {
+
+				myText = "HEYOOOOO YOU GOT TO THE WIN ROOOM!!!! BOIIOIOIOIOING, NICE! Let'S ENJOY CAKE.";
+
+			} else {
+
+				myText = "Sorry, you unlucky person, you need a key.\n\n Press space to return to the hallway";
+
+				if (Input.GetKeyDown(KeyCode.Space)) {
+					currentRoom = "hallway";
+				}
+
+			}
+
 
 		} else {
 
@@ -88,7 +134,11 @@ public class MyTextAdventure : MonoBehaviour {
 
 
 		if (room_south != "nil"){
+
+			myText += "Press Down to go to the " + room_south + "\n";
+
 			if (Input.GetKeyDown(KeyCode.DownArrow)){
+				
 				
 				currentRoom = room_south;
 
@@ -96,7 +146,10 @@ public class MyTextAdventure : MonoBehaviour {
 		}
 	
 		if (room_east != "nil"){
-			if (Input.GetKeyDown(KeyCode.LeftArrow)){
+
+			myText += "Press Right to go to the " + room_east + "\n";
+
+			if (Input.GetKeyDown(KeyCode.RightArrow)){
 				
 				currentRoom = room_east;
 
@@ -104,7 +157,10 @@ public class MyTextAdventure : MonoBehaviour {
 		}
 
 		if (room_west != "nil") {
-			if (Input.GetKeyDown(KeyCode.RightArrow)){
+
+			myText += "Press Left to go to the " + room_west + "\n";
+
+			if (Input.GetKeyDown(KeyCode.LeftArrow)){
 				
 				currentRoom = room_west;
 
