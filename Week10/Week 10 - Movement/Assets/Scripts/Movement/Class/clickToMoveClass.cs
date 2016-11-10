@@ -7,6 +7,8 @@ public class clickToMoveClass : MonoBehaviour {
 
 	Vector3 move;
 
+	public float moveSpeed;
+
 	// Use this for initialization
 	void Start () {
 	
@@ -37,7 +39,7 @@ public class clickToMoveClass : MonoBehaviour {
 				move = move.normalized;
 
 
-
+				transform.position += move * Time.deltaTime * moveSpeed;
 				//transform.position = Vector3.Lerp(transform.position, destination, .2f);
 
 			}
